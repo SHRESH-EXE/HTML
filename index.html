@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NagrikSeva (नागरिक सेवा) - Citizen Grievance & Municipal Redressal Portal</title>
+  <meta name="description" content="Report road potholes, streetlights, garbage blackspots, and water leakage in seconds and track them to verified resolution with NagrikSeva.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- ========================================================================
+       TOP GLOBAL NAVIGATION BAR
+       ======================================================================== -->
+  <header class="main-navbar" id="app-main-navbar">
+    <div class="nav-container">
+      
+      <!-- Brand Logo -->
+      <div class="nav-brand" onclick="window.App.goHome()">
+        <div class="brand-title-wrap">
+          <span class="brand-title">NagrikSeva</span>
+          <span class="brand-subtitle">नागरिक सेवा पोर्टल • Municipal Corp</span>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav>
+        <ul class="nav-links-menu">
+          <li id="nav-tab-resident">
+            <button type="button" class="nav-link-btn active" data-view="resident">
+              <i data-lucide="home"></i> My Ward
+            </button>
+          </li>
+          <li id="nav-tab-municipal">
+            <button type="button" class="nav-link-btn" data-view="municipal">
+              Field Operations
+            </button>
+          </li>
+          <li id="nav-tab-helpdesk">
+            <button type="button" class="nav-link-btn" data-view="helpdesk">
+              Help Desk
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Right Header Actions -->
+      <div class="nav-actions-right">
+        
+        <!-- Notification Bell Dropdown -->
+        <div class="notif-bell-wrapper">
+          <button type="button" class="bell-icon-btn" id="notification-bell-btn" title="Notifications">
+            <i data-lucide="bell"></i>
+            <span class="notif-badge-pill" id="notif-unread-badge">2</span>
+          </button>
+
+          <!-- Notification Dropdown Panel -->
+          <div class="notification-dropdown-panel" id="notification-dropdown">
+            <div class="notif-header">
+              <h4>Activity & Grievance Updates</h4>
+              <button type="button" class="btn-text-link" id="btn-mark-all-read">Mark all as read</button>
+            </div>
+            <div class="notif-items-list" id="notif-items-list">
+              <!-- Populated dynamically by resident.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- User Profile Pill -->
+        <div class="user-profile-pill">
+          <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&q=80" alt="Avatar" class="user-nav-avatar" id="nav-user-avatar">
+          <div class="user-nav-meta">
+            <span class="user-nav-name" id="nav-user-name">Aarav Sharma</span>
+            <span class="user-nav-role" id="nav-user-role">Resident - Ward 112</span>
+          </div>
+          <button type="button" class="btn-text-link text-slate-400 ml-1" id="btn-nav-logout" title="Sign Out">
+            Sign Out
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ========================================================================
+       VIEW 1: AUTHENTICATION (LOGIN & REGISTRATION & ROLE SELECTION)
+       ======================================================================== -->
+  <main id="view-auth" class="auth-split-wrapper" style="display: none;">
+    
+    <!-- Left Panel: Civic Branding -->
+    <div class="auth-left-panel">
+      <div>
+        <div class="auth-civic-badge">
+          <i data-lucide="landmark"></i> नगर निगम नागरिक सेवा पोर्टल • Smart City Mission
+        </div>
+        <h1 class="auth-hero-title">
+          एक शहर, एक आवाज़ —<br><span>One neighborhood, one voice.</span>
+        </h1>
+        <p class="auth-hero-desc">
+          "One neighborhood, one voice. Report potholes, streetlight outages, and waste issues in seconds and track them to resolution."
+        </p>
+      </div>
+
+      <!-- Live Civic Stats Counters -->
+      <div class="auth-stats-grid">
+        <div class="auth-stat-box">
+          <h3>3,420+</h3>
+          <p>Grievances Resolved</p>
+        </div>
+        <div class="auth-stat-box">
+          <h3>18.4 hrs</h3>
+          <p>Avg Citizen SLA</p>
+        </div>
+        <div class="auth-stat-box">
+          <h3>4 Wards</h3>
+          <p>Active In-Service</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel: Tabbed Toggle (Login / Register) & Demo Quick-Logins -->
+    <div class="auth-right-panel">
+      
+      <!-- Tabbed Toggle -->
+      <div class="auth-toggle-tabs">
+        <button type="button" class="auth-tab-btn active" id="auth-tab-login">Login</button>
+        <button type="button" class="auth-tab-btn" id="auth-tab-register">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="auth-login-form" class="auth-form">
+        <div class="form-group">
+          <label for="login-email">Email Address</label>
+          <input type="email" id="login-email" class="form-input" value="commissioner@muni.gov.in" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" class="form-input" value="password123" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-md mt-2">
+          Sign In to NagrikSeva <i data-lucide="arrow-right"></i>
+        </button>
+
+        <!-- Quick Demo Role Logins -->
+        <div class="auth-quick-login-box">
+          <div class="quick-login-title">Quick Demo Login (1-Click Switch)</div>
+          <div class="quick-login-buttons-grid" style="grid-template-columns: repeat(4, 1fr);">
+            <button type="button" class="btn-demo-quick" data-demo-role="admin" title="Municipal Commissioner (Admin)">
+              <i data-lucide="shield-check"></i>
+              <span>Admin</span>
+              <small style="font-size:0.65rem; color:#64748b;">Commissioner</small>
+            </button>
+            <button type="button" class="btn-demo-quick" data-demo-role="field_team" title="Field Worker (PWD Engineer)">
+              <i data-lucide="hard-hat"></i>
+              <span>Worker</span>
+              <small style="font-size:0.65rem; color:#64748b;">PWD Engineer</small>
+            </button>
+            <button type="button" class="btn-demo-quick" data-demo-role="help_desk" title="Help Desk Officer">
+              <i data-lucide="headphones"></i>
+              <span>Helpdesk</span>
+              <small style="font-size:0.65rem; color:#64748b;">Officer</small>
+            </button>
+            <button type="button" class="btn-demo-quick" data-demo-role="resident" title="Resident Citizen">
+              <i data-lucide="user"></i>
+              <span>Resident</span>
+              <small style="font-size:0.65rem; color:#64748b;">Citizen</small>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Registration Form (Full Name, Email, Phone, Ward dropdown, Password) -->
+      <form id="auth-register-form" class="auth-form" style="display: none;">
+        <div class="form-group">
+          <label for="reg-fullname">Full Name</label>
+          <input type="text" id="reg-fullname" class="form-input" placeholder="e.g. Aarav Sharma" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-email">Email Address</label>
+          <input type="email" id="reg-email" class="form-input" placeholder="aarav@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-phone">Phone Number</label>
+          <input type="tel" id="reg-phone" class="form-input" placeholder="+91 98765 43210" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-ward">Neighborhood / Ward</label>
+          <select id="reg-ward" class="form-select" required>
+            <option value="ward-5">New Delhi - Ward 24 (Connaught Place)</option>
+            <option value="ward-6">New Delhi - Ward 42 (South Extension)</option>
+            <option value="ward-7">Mumbai - Ward H/West (Bandra West)</option>
+            <option value="ward-8">Mumbai - Ward A (Marine Drive)</option>
+            <option value="ward-1">Bengaluru - Ward 112 (Indiranagar Central)</option>
+            <option value="ward-2">Bengaluru - Ward 80 (Koramangala)</option>
+            <option value="ward-3">Bengaluru - Ward 150 (Bellandur)</option>
+            <option value="ward-4">Bengaluru - Ward 74 (Malleshwaram)</option>
+            <option value="ward-9">Kolkata - Ward 63 (Park Street)</option>
+            <option value="ward-10">Kolkata - Ward 31 (Salt Lake Sector V)</option>
+            <option value="ward-11">Hyderabad - Ward 98 (HITEC City)</option>
+            <option value="ward-12">Hyderabad - Ward 70 (Banjara Hills)</option>
+            <option value="ward-13">Chennai - Ward 118 (T. Nagar)</option>
+            <option value="ward-14">Pune - Ward 12 (Shivajinagar)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Password</label>
+          <input type="password" id="reg-password" class="form-input" placeholder="Create a secure password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-md mt-2">
+          Complete Resident Registration
+        </button>
+      </form>
+
+    </div>
+  </main>
+
+
+  <!-- ========================================================================
+       VIEW 2: RESIDENT DASHBOARD
+       ======================================================================== -->
+  <main id="view-resident" class="view-container">
+    
+    <!-- Page Header -->
+    <div class="page-header-row">
+      <div>
+        <h1 class="page-title">Neighborhood Civic Center</h1>
+        <p class="page-subtitle">Track roadwork, streetlight maintenance, sanitation updates, and community reports in real time.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button type="button" class="btn btn-primary btn-open-report-wizard">
+          Report an Issue
+        </button>
+      </div>
+    </div>
+
+    <!-- Top Stats Row (My Reports, In Progress, Resolved, Community Upvotes) -->
+    <div class="stats-cards-row">
+      <div class="stat-card">
+        <div class="stat-icon-wrap blue">
+          <i data-lucide="file-text"></i>
+        </div>
+        <div class="stat-card-info">
+          <h4 id="stat-my-reports">3</h4>
+          <p>My Reports</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap amber">
+          <i data-lucide="clock"></i>
+        </div>
+        <div class="stat-card-info">
+          <h4 id="stat-in-progress">4</h4>
+          <p>In Progress</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap emerald">
+          <i data-lucide="check-circle-2"></i>
+        </div>
+        <div class="stat-card-info">
+          <h4 id="stat-resolved">1</h4>
+          <p>Resolved</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap purple">
+          <i data-lucide="thumbs-up"></i>
+        </div>
+        <div class="stat-card-info">
+          <h4 id="stat-community-upvotes">105</h4>
+          <p>Community Upvotes</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div class="filter-controls-bar">
+      <div class="flex items-center justify-between w-full gap-3">
+        <input type="text" id="resident-search-input" class="form-input text-xs w-64" placeholder="Search address, title, keyword...">
+      </div>
+    </div>
+
+    <!-- Card List View Grid -->
+    <div class="cards-grid-layout" id="resident-card-list-container">
+      <!-- Populated dynamically by resident.js -->
+    </div>
+
+  </main>
+
+
+  <!-- ========================================================================
+       VIEW 3: MUNICIPAL / FIELD TEAM DASHBOARD
+       ======================================================================== -->
+  <main id="view-municipal" class="view-container" style="display: none;">
+    
+    <!-- Page Header -->
+    <div class="page-header-row">
+      <div>
+        <h1 class="page-title" id="muni-page-title">Municipal Operations & Field Dispatch</h1>
+        <p class="page-subtitle" id="muni-page-subtitle">SLA triage, crew assignment, and status lifecycle control.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="view-mode-toggle-segmented">
+          <button type="button" class="segmented-btn active" id="muni-toggle-table">
+            <i data-lucide="table"></i> Data Table
+          </button>
+          <button type="button" class="segmented-btn" id="muni-toggle-kanban">
+            <i data-lucide="columns"></i> Kanban Board
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI Metrics Bar (Open Tickets, High Priority, SLA Breaches > 48hrs, Resolution Rate) -->
+    <div class="kpi-metrics-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">Open Tickets</span>
+        <h3 class="kpi-value text-blue-600" id="kpi-open-tickets">5</h3>
+      </div>
+      <div class="kpi-card high-prio">
+        <span class="kpi-label">High Priority & Critical</span>
+        <h3 class="kpi-value text-amber-600" id="kpi-high-priority">3</h3>
+      </div>
+      <div class="kpi-card sla-breach">
+        <span class="kpi-label">SLA Breaches (> 48 hrs)</span>
+        <h3 class="kpi-value text-rose-600" id="kpi-sla-breaches">2</h3>
+      </div>
+      <div class="kpi-card resolution-rate">
+        <span class="kpi-label">Resolution Rate</span>
+        <h3 class="kpi-value text-emerald-600" id="kpi-resolution-rate">17%</h3>
+      </div>
+    </div>
+
+    <!-- Filter Toolbar -->
+    <div class="muni-filter-toolbar">
+      <div class="muni-filter-inputs">
+        <select id="muni-filter-ward" class="filter-select">
+          <option value="all">All Wards (India)</option>
+          <option value="ward-5">Delhi - Connaught Place</option>
+          <option value="ward-6">Delhi - South Extension</option>
+          <option value="ward-7">Mumbai - Bandra West</option>
+          <option value="ward-8">Mumbai - Marine Drive</option>
+          <option value="ward-1">Bengaluru - Indiranagar</option>
+          <option value="ward-2">Bengaluru - Koramangala</option>
+          <option value="ward-3">Bengaluru - Bellandur</option>
+          <option value="ward-4">Bengaluru - Malleshwaram</option>
+          <option value="ward-9">Kolkata - Park Street</option>
+          <option value="ward-10">Kolkata - Salt Lake</option>
+          <option value="ward-11">Hyderabad - HITEC City</option>
+          <option value="ward-12">Hyderabad - Banjara Hills</option>
+          <option value="ward-13">Chennai - T. Nagar</option>
+          <option value="ward-14">Pune - Shivajinagar</option>
+        </select>
+
+        <select id="muni-filter-assignee" class="filter-select">
+          <option value="all">All Assignees</option>
+          <option value="usr-field-1">Er. Rajesh Verma (PWD)</option>
+          <option value="usr-field-2">Vikram Singh (BESCOM)</option>
+          <option value="unassigned">Unassigned</option>
+        </select>
+      </div>
+
+      <div>
+        <input type="text" id="muni-filter-search" class="form-input text-xs w-60" placeholder="Filter title, ID or address...">
+      </div>
+    </div>
+
+    <!-- Data Table View -->
+    <div id="muni-table-view-container" class="table-responsive-wrapper">
+      <table class="civic-data-table">
+        <thead>
+          <tr>
+            <th class="td-checkbox" id="muni-th-checkbox">
+              <input type="checkbox" id="muni-master-checkbox" title="Select All">
+            </th>
+            <th>Ticket ID</th>
+            <th>Issue Title & Location</th>
+            <th>SLA Status</th>
+            <th>Field Assignee</th>
+          </tr>
+        </thead>
+        <tbody id="muni-table-tbody">
+          <!-- Populated dynamically by municipal.js -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Kanban Board View -->
+    <div id="muni-kanban-view-container" class="kanban-grid-layout" style="display: none;">
+      <!-- Populated dynamically by municipal.js -->
+    </div>
+
+    <!-- Bulk Actions Floating Bar (appears when tickets are selected) -->
+    <div class="bulk-actions-floating-bar" id="muni-bulk-actions-bar">
+      <span class="text-sm font-semibold" id="bulk-selected-count">0 tickets selected</span>
+      <select id="bulk-assignee-select" class="filter-select text-xs">
+        <option value="">-- Assign to Field Staff --</option>
+        <option value="usr-field-1">Er. Rajesh Verma (AEE - PWD)</option>
+        <option value="usr-field-2">Vikram Singh (BESCOM Line Tech)</option>
+      </select>
+      <button type="button" class="btn btn-primary btn-sm" id="btn-execute-bulk-assign">
+        <i data-lucide="user-check"></i> Bulk Assign Selected
+      </button>
+      <button type="button" class="btn btn-outline btn-xs text-white" id="btn-clear-selection">
+        Cancel
+      </button>
+    </div>
+
+  </main>
+
+
+  <!-- ========================================================================
+       VIEW 4: HELP DESK & ESCALATION CENTER
+       ======================================================================== -->
+  <main id="view-helpdesk" class="view-container" style="display: none;">
+    
+    <!-- Resident Section: Escalation Form, FAQs, Emergency Quick-Dials -->
+    <div id="helpdesk-resident-section" class="helpdesk-layout">
+      
+      <div class="page-header-row">
+        <div>
+          <h1 class="page-title">Civic Help Desk & Escalation Center</h1>
+          <p class="page-subtitle">Immediate assistance, overdue ticket escalation, and emergency safety hazard contact.</p>
+        </div>
+      </div>
+
+      <!-- Emergency Quick-Dial Cards (Gas Leak, Live Wire, Water Main) -->
+      <div>
+        <h3 class="text-base font-bold text-slate-900 mb-3 flex items-center gap-2">
+          <i data-lucide="alert-octagon" class="text-rose-600"></i> Emergency Quick-Dial Contacts
+        </h3>
+        <div class="emergency-cards-grid">
+          
+          <div class="emergency-card flame">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="emergency-badge">Immediate Danger</span>
+                <i data-lucide="flame" class="text-rose-600"></i>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base">Gas Cylinder Leak</h4>
+              <p class="text-xs text-slate-600 mt-1">Strong odor or leak. Evacuate area immediately.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-rose-100 flex items-center justify-between">
+              <span class="font-mono font-bold text-xs text-rose-700">1906 / 112</span>
+              <button type="button" class="btn btn-rose btn-xs btn-emergency-dial"
+                data-emergency-title="Active LPG Leak Emergency Response"
+                data-emergency-phone="1906 (Toll-Free) / 112"
+                data-emergency-instruction="Do not operate electrical switches, light matchsticks, or use cellphones near gas cylinder. Evacuate outdoors immediately.">
+                <i data-lucide="phone-call"></i> Call Gas Helpline
+              </button>
+            </div>
+          </div>
+
+          <div class="emergency-card electric">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="emergency-badge" style="background:#fef3c7; color:#b45309;">Electrocution Risk</span>
+                <i data-lucide="zap" class="text-amber-500"></i>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base">Downed Live Wire</h4>
+              <p class="text-xs text-slate-600 mt-1">Fallen cable or spark. Maintain 35 ft distance.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-amber-100 flex items-center justify-between">
+              <span class="font-mono font-bold text-xs text-amber-700">1912 / 112</span>
+              <button type="button" class="btn btn-warning btn-xs btn-emergency-dial"
+                data-emergency-title="Downed Power Line Safety Alert"
+                data-emergency-phone="1912 (BESCOM Helpline) / 112"
+                data-emergency-instruction="Stay back at least 35 feet. Assume all fallen wires carry high voltage. Keep children and pedestrians away from water puddles.">
+                <i data-lucide="phone-call"></i> Call 1912
+              </button>
+            </div>
+          </div>
+
+          <div class="emergency-card flood">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="emergency-badge" style="background:#cffafe; color:#0e7490;">Structural Flood</span>
+                <i data-lucide="droplets" class="text-cyan-600"></i>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base">Water Main Burst</h4>
+              <p class="text-xs text-slate-600 mt-1">Major pipeline burst or street cave-in hazard.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-cyan-100 flex items-center justify-between">
+              <span class="font-mono font-bold text-xs text-cyan-800">1916 / 1533</span>
+              <button type="button" class="btn btn-primary btn-xs btn-emergency-dial"
+                data-emergency-title="Jal Board Rapid Response Dispatch"
+                data-emergency-phone="1916 (BWSSB Desk) / 1533 (Nagar Nigam 24x7)"
+                data-emergency-instruction="Avoid driving or walking through flooded road depression. Flooding may conceal open drain manholes.">
+                <i data-lucide="phone-call"></i> Call Jal Board
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Escalate Unresolved Issue Form & Searchable FAQ Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
+        
+        <!-- Left: Escalate Unresolved Issue Form -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+              <i data-lucide="arrow-up-right"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-lg">Escalate Unresolved Issue</h3>
+              <p class="text-xs text-slate-500">Submit an inquiry if your report has exceeded target department SLA.</p>
+            </div>
+          </div>
+
+          <form id="escalate-issue-form" class="space-y-4">
+            <div class="form-group">
+              <label for="escalate-issue-select">Select Active Report to Escalate</label>
+              <select id="escalate-issue-select" class="form-select" required>
+                <!-- Populated dynamically with open tickets -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="escalate-subject-input">Inquiry Subject</label>
+              <input type="text" id="escalate-subject-input" class="form-input" placeholder="e.g. Streetlight out for over 48 hours near school" required>
+            </div>
+
+            <div class="form-group">
+              <label for="escalate-urgency-select">Urgency Reason</label>
+              <select id="escalate-urgency-select" class="form-select">
+                <option value="high">SLA Overdue - Needs Immediate Crew Dispatch</option>
+                <option value="critical">Safety Hazard Impacting Pedestrians/Traffic</option>
+                <option value="medium">General Status Clarification Inquiry</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="escalate-message-input">Detailed Explanation for Help Desk Agent</label>
+              <textarea id="escalate-message-input" rows="4" class="form-textarea" placeholder="Explain the prolonged impact, safety risk, or urgency..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-warning w-full">
+              <i data-lucide="send"></i> Submit Escalation to Help Desk
+            </button>
+          </form>
+        </div>
+
+        <!-- Right: Searchable Civic FAQ Accordion -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+              <i data-lucide="help-circle"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-lg">Civic Knowledge Base & FAQ</h3>
+              <p class="text-xs text-slate-500">Answers regarding SLAs, dispatch policies, and verification.</p>
+            </div>
+          </div>
+
+          <!-- Live FAQ Search Input -->
+          <div class="faq-search-wrapper">
+            <input type="text" id="faq-search-input" class="form-input text-xs" placeholder="Search FAQ (e.g., 'pothole', 'power line', 'after photo')...">
+          </div>
+
+          <div class="faq-accordion-container" id="faq-accordion-container">
+            <!-- Populated dynamically by helpdesk.js -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Agent Section: Unified Support Inbox (Ping, Escalate, Merge) -->
+    <div id="helpdesk-agent-section" class="agent-inbox-grid" style="display: none;">
+      
+      <!-- Left: Ticket List -->
+      <div class="agent-tickets-sidebar">
+        <div class="agent-tickets-header">
+          <h3 class="font-bold text-slate-900 text-sm">Help Desk Triage Queue</h3>
+          <span class="text-xs text-slate-500">Resident Escalations & Inquiries</span>
+        </div>
+        <div class="overflow-y-auto flex-1" id="agent-tickets-list">
+          <!-- Populated dynamically by helpdesk.js -->
+        </div>
+      </div>
+
+      <!-- Right: Ticket Detail & 1-Click Actions -->
+      <div class="agent-ticket-detail-pane" id="agent-ticket-detail-pane">
+        <!-- Populated dynamically by helpdesk.js -->
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- ========================================================================
+       MODAL 1: 'REPORT AN ISSUE' MULTI-STEP WIZARD (PROMPT #3)
+       ======================================================================== -->
+  <div class="modal-backdrop" id="report-issue-modal">
+    <div class="modal-dialog-large">
+      
+      <!-- Wizard Header -->
+      <div class="wizard-modal-header">
+        <div>
+          <h3 class="font-bold text-slate-900 text-lg">Report a Neighborhood Issue</h3>
+          <p class="text-xs text-slate-500">Quick 3-step filing with automated routing and duplicate checking</p>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="window.IssueReportWizard.close()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <!-- 3-Step Wizard Indicator -->
+      <div class="wizard-steps-indicator">
+        <div class="wizard-step-node active" data-step="1">
+          <div class="step-num-circle">1</div>
+          <span>Issue Type</span>
+        </div>
+        <div class="wizard-step-node" data-step="2">
+          <div class="step-num-circle">2</div>
+          <span>Location & Check</span>
+        </div>
+        <div class="wizard-step-node" data-step="3">
+          <div class="step-num-circle">3</div>
+          <span>Photos & Details</span>
+        </div>
+      </div>
+
+      <!-- Wizard Body -->
+      <div class="wizard-modal-body">
+        
+        <!-- STEP 1: Issue Type -->
+        <div class="wizard-step-view active" id="wizard-step-1">
+          
+          <label class="text-sm font-bold text-slate-900">Select Issue Type</label>
+          <div class="category-grid-5">
+            <button type="button" class="category-card-btn selected" data-category="Pothole">
+              <span>Pothole</span>
+            </button>
+            <button type="button" class="category-card-btn" data-category="Streetlight">
+              <span>Streetlight</span>
+            </button>
+            <button type="button" class="category-card-btn" data-category="Waste">
+              <span>Waste</span>
+            </button>
+            <button type="button" class="category-card-btn" data-category="Water">
+              <span>Water</span>
+            </button>
+            <button type="button" class="category-card-btn" data-category="Other">
+              <span>Other</span>
+            </button>
+          </div>
+
+          <!-- Auto-Routing Department Preview Box -->
+          <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between text-xs text-blue-900 mt-4">
+            <span class="flex items-center gap-2">
+              Automated Routing:
+              <strong id="routing-dept-badge" class="bg-blue-600 text-white px-2 py-0.5 rounded">Public Works Dept (PWD)</strong>
+            </span>
+            <span id="routing-sla-badge" class="font-bold text-blue-800">48h Target SLA</span>
+          </div>
+
+        </div>
+
+        <!-- STEP 2: Location & Duplicate Check -->
+        <div class="wizard-step-view" id="wizard-step-2">
+          
+          <div class="mb-3">
+            <label class="text-sm font-bold text-slate-900">Issue Location & Landmark</label>
+            <p class="text-xs text-slate-500">Select the neighborhood ward and provide the street address or nearest landmark.</p>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="report-ward-select" class="text-xs font-semibold text-slate-700">Neighborhood / Ward</label>
+            <select id="report-ward-select" class="form-select text-xs mt-1">
+              <option value="ward-1">Bengaluru - Ward 112 (Indiranagar Central)</option>
+              <option value="ward-2">Bengaluru - Ward 80 (Koramangala & HSR Link)</option>
+              <option value="ward-3">Bengaluru - Ward 150 (Bellandur & ORR)</option>
+              <option value="ward-4">Bengaluru - Ward 74 (Malleshwaram)</option>
+              <option value="ward-5">New Delhi - Ward 24 (Connaught Place)</option>
+              <option value="ward-6">New Delhi - Ward 42 (South Extension)</option>
+              <option value="ward-7">Mumbai - Ward H/West (Bandra West)</option>
+              <option value="ward-8">Mumbai - Ward A (Marine Drive)</option>
+              <option value="ward-9">Kolkata - Ward 63 (Park Street)</option>
+              <option value="ward-10">Kolkata - Ward 31 (Salt Lake Sector V)</option>
+              <option value="ward-11">Hyderabad - Ward 98 (HITEC City)</option>
+              <option value="ward-12">Hyderabad - Ward 70 (Banjara Hills)</option>
+              <option value="ward-13">Chennai - Ward 118 (T. Nagar)</option>
+              <option value="ward-14">Pune - Ward 12 (Shivajinagar)</option>
+            </select>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="report-address-input" class="text-xs font-semibold text-slate-700">Street Address / Nearest Landmark</label>
+            <input type="text" id="report-address-input" class="form-input text-xs mt-1" placeholder="e.g. Near Metro Pillar 42, 100 Feet Road, Indiranagar" required>
+          </div>
+
+          <!-- Inline Duplicate Match Card: "Wait! Has this already been reported?" -->
+          <div class="duplicate-slideover-card" id="duplicate-slideover-card">
+            <!-- Rendered dynamically by issue-form.js -->
+          </div>
+
+        </div>
+
+        <!-- STEP 3: Photos (Max 3) & Detailed Description -->
+        <div class="wizard-step-view" id="wizard-step-3">
+          
+          <div class="form-group">
+            <label for="report-title-input">Issue Title</label>
+            <input type="text" id="report-title-input" class="form-input" placeholder="e.g. Deep pothole damaging tires near crosswalk" required>
+          </div>
+
+          <div class="form-group mt-3">
+            <label for="report-desc-input">Detailed Description</label>
+            <textarea id="report-desc-input" rows="3" class="form-textarea" placeholder="Describe the dimensions, specific hazards, street landmarks, or safety impacts..." required></textarea>
+          </div>
+
+          <!-- Drag and Drop Image Uploader (Max 3 Photos) -->
+          <div class="mt-3">
+            <label class="text-xs font-bold text-slate-800">Attach Evidence Photos (Max 3)</label>
+            <div class="dropzone-box" id="photo-dropzone">
+              <i data-lucide="upload-cloud" style="width:32px;height:32px;margin:0 auto 6px auto;display:block;"></i>
+              <p>Drag & drop photos here, or click to browse</p>
+              <span>Supports JPG, PNG, WebP (Up to 3 high-resolution images)</span>
+              <input type="file" id="photo-file-input" multiple accept="image/*" style="display: none;">
+            </div>
+
+            <!-- Photo Thumbnails Grid -->
+            <div class="photo-preview-grid" id="photo-preview-grid"></div>
+
+            <!-- Quick Preset Chips (For Instant Evaluator Demo Testing) -->
+            <div class="flex items-center gap-2 text-xs text-slate-500">
+              <span>Quick Sample Presets:</span>
+              <div class="preset-photo-chips-row">
+                <button type="button" class="preset-photo-chip" data-url="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80">+ Pothole Crater</button>
+                <button type="button" class="preset-photo-chip" data-url="https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80">+ Dark Lamp Post</button>
+                <button type="button" class="preset-photo-chip" data-url="https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=800&q=80">+ Broken Bins</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Wizard Footer Buttons -->
+      <div class="wizard-modal-footer">
+        <button type="button" class="btn btn-outline btn-sm" id="report-wizard-prev" style="display: none;">
+          Previous Step
+        </button>
+        <div class="ml-auto flex items-center gap-2">
+          <button type="button" class="btn btn-outline btn-sm" onclick="window.IssueReportWizard.close()">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" id="report-wizard-next">
+            Next Step
+          </button>
+          <button type="button" class="btn btn-emerald btn-sm" id="report-wizard-submit" style="display: none;">
+            Submit Civic Report
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ========================================================================
+       MODAL 2: ISSUE DETAIL VIEW & RESOLUTION WORKFLOW (PROMPT #4)
+       ======================================================================== -->
+  <div class="modal-backdrop" id="issue-detail-modal">
+    <div class="issue-detail-dialog">
+      
+      <!-- Detail Header Card -->
+      <div class="detail-header-card">
+        <div class="detail-title-section">
+          <div class="detail-badges-row">
+            <span class="font-mono font-bold text-xs text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200" id="detail-issue-id">ISS-2026-081</span>
+            <span id="detail-sla-status" class="badge-sla">SLA Active</span>
+          </div>
+          <h2 class="text-xl font-bold text-slate-900 mt-1" id="detail-issue-title">Issue Title</h2>
+          <p class="text-xs text-slate-500 flex items-center gap-1.5" id="detail-issue-address">Address Location</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Upvote Endorsement Button -->
+          <button type="button" class="btn btn-outline btn-sm" id="detail-upvote-btn">
+            Endorse (+1) <span id="detail-upvotes-count" class="font-bold ml-1">14</span>
+          </button>
+          <button type="button" class="modal-close-btn" id="issue-detail-close-btn">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Detail Scrollable Body -->
+      <div class="detail-scroll-body">
+        
+        <!-- Auto-Routing & Assignee Department Info Card -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+          <div>
+            <span class="text-slate-400 uppercase font-bold text-[10px] block">Auto-Routed Department</span>
+            <strong class="text-slate-800 text-sm" id="detail-assigned-dept">Public Works</strong>
+          </div>
+          <div>
+            <span class="text-slate-400 uppercase font-bold text-[10px] block">Field Lead / Crew</span>
+            <div class="flex items-center gap-2 mt-0.5">
+              <img src="" class="w-6 h-6 rounded-full object-cover" id="detail-assignee-avatar" alt="Crew">
+              <strong class="text-slate-800" id="detail-assignee-name">Marcus Vance</strong>
+            </div>
+          </div>
+          <div>
+            <span class="text-slate-400 uppercase font-bold text-[10px] block">Submitted Date & Time</span>
+            <span class="text-slate-700" id="detail-created-time">Oct 28, 2026</span>
+          </div>
+        </div>
+
+        <!-- Issue Description -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Resident Description</h4>
+          <p class="text-sm text-slate-800 leading-relaxed" id="detail-issue-desc"></p>
+        </div>
+
+        <!-- Horizontal Status Timeline (Prompt #4) -->
+        <div class="timeline-horizontal-wrapper">
+          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-1.5">
+            <i data-lucide="git-commit"></i> Status Workflow Timeline
+          </h4>
+          <div class="horizontal-status-timeline" id="horizontal-status-timeline">
+            <!-- Populated dynamically by issue-detail.js -->
+          </div>
+        </div>
+
+        <!-- Staff Workflow Action Bar -->
+        <div id="detail-staff-actions">
+          <!-- Populated dynamically based on user role -->
+        </div>
+
+        <!-- Before & After Media Comparison Gallery (Prompt #4) -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+            <i data-lucide="images"></i> Verified Photo Evidence (Before vs After)
+          </h4>
+          <div id="detail-media-gallery">
+            <!-- Populated dynamically by issue-detail.js -->
+          </div>
+        </div>
+
+        <!-- Two-Tab Discussion: Public Updates vs Internal Team Notes (Prompt #4) -->
+        <div class="comments-container">
+          <div class="comment-tabs-header">
+            <button type="button" class="comment-tab-btn active" data-tab="public">
+              <i data-lucide="message-square"></i> Public Updates
+            </button>
+            <button type="button" class="comment-tab-btn" id="detail-internal-tab-btn" data-tab="internal">
+              <i data-lucide="lock"></i> Internal Team Notes (Staff & Help Desk Only)
+            </button>
+          </div>
+
+          <!-- Comments Thread -->
+          <div class="comments-list-thread" id="comments-list-container">
+            <!-- Populated dynamically by issue-detail.js -->
+          </div>
+
+          <!-- Comment Input Area -->
+          <div id="comment-input-area">
+            <div class="quick-mentions-bar">
+              <span class="text-[11px] text-slate-400">Quick mentions:</span>
+              <button type="button" class="mention-chip" data-mention="@pwd.officer">@pwd.officer</button>
+              <button type="button" class="mention-chip" data-mention="@bescom.officer">@bescom.officer</button>
+              <button type="button" class="mention-chip" data-mention="@aarav.resident">@aarav.resident</button>
+            </div>
+            <form id="issue-comment-form" class="flex gap-2">
+              <input type="text" id="comment-input-text" class="form-input text-xs flex-1" placeholder="Type a message or technical update..." required>
+              <button type="submit" class="btn btn-primary btn-sm">
+                <i data-lucide="send"></i> Post Update
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ========================================================================
+       MODAL 3: RESOLUTION PHOTO ENFORCEMENT MODAL (PROMPT #4 MANDATORY)
+       ======================================================================== -->
+  <div class="modal-backdrop" id="resolve-photo-modal">
+    <div class="modal-dialog-large max-w-md">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+            <i data-lucide="camera"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-900 text-base">Resolution Proof Required</h3>
+            <span class="text-xs text-slate-500">MANDATORY on-site completion verification</span>
+          </div>
+        </div>
+        <button type="button" class="modal-close-btn" id="btn-cancel-resolve">&times;</button>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <p class="text-xs text-slate-600">
+          Under the CivicPulse Transparency Charter, staff cannot mark an issue <strong>RESOLVED</strong> without attaching photographic evidence of the completed repair.
+        </p>
+
+        <div class="form-group">
+          <label class="text-xs font-bold text-slate-800">Upload "After" Resolution Photo</label>
+          <input type="file" id="resolve-after-file" accept="image/*" class="form-input text-xs">
+        </div>
+
+        <div class="text-xs text-slate-500">
+          <span>Or select quick verified demo photo:</span>
+          <div class="flex items-center gap-2 mt-1">
+            <button type="button" class="preset-after-chip text-xs bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded"
+              data-url="https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80">
+              Cleaned & Repaired Street
+            </button>
+            <button type="button" class="preset-after-chip text-xs bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded"
+              data-url="https://images.unsplash.com/photo-1541888946425-d0fbb186156f?auto=format&fit=crop&w=800&q=80">
+              Fresh Asphalt Patch
+            </button>
+          </div>
+        </div>
+
+        <div id="resolve-photo-preview"></div>
+
+        <div class="form-group">
+          <label for="resolve-note-input" class="text-xs font-bold text-slate-800">Field Completion Note</label>
+          <textarea id="resolve-note-input" rows="2" class="form-textarea text-xs" placeholder="e.g. Asphalt cured, debris removed, traffic lane reopened."></textarea>
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-2">
+        <button type="button" class="btn btn-outline btn-sm" onclick="window.IssueDetailView.closeResolveModal()">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-emerald btn-sm" id="btn-confirm-resolve">
+          <i data-lucide="check-circle-2"></i> Confirm Resolution & Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================
+       MODAL 4: MERGE DUPLICATES MODAL (HELP DESK ACTION)
+       ======================================================================== -->
+  <div class="modal-backdrop" id="merge-duplicates-modal">
+    <div class="modal-dialog-large max-w-lg">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+        <div>
+          <h3 class="font-bold text-slate-900 text-base">Merge Duplicate Civic Reports</h3>
+          <span class="text-xs text-blue-600 font-mono font-bold" id="merge-master-issue-label">Master: #ISS-2026-082</span>
+        </div>
+        <button type="button" class="modal-close-btn" id="btn-cancel-merge">&times;</button>
+      </div>
+
+      <div class="p-5">
+        <p class="text-xs text-slate-600 mb-3">
+          Select child duplicate reports to merge into this master report. Merged reports will be marked CLOSED, and their resident endorsements (+1 upvotes) will be transferred to the master ticket.
+        </p>
+
+        <div id="merge-candidates-container" class="space-y-2 max-h-60 overflow-y-auto border border-slate-200 p-2 rounded-lg">
+          <!-- Populated dynamically by helpdesk.js -->
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-2">
+        <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('merge-duplicates-modal').classList.remove('active')">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" id="btn-confirm-merge-issues">
+          <i data-lucide="git-merge"></i> Confirm & Merge Issues
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================
+       MODAL 5: EMERGENCY ACTION DIALOG (FOR QUICK-DIAL CARDS)
+       ======================================================================== -->
+  <div class="modal-backdrop" id="emergency-action-modal">
+    <div class="modal-dialog-large max-w-md">
+      <div class="p-5 border-b border-slate-200 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold">
+          <i data-lucide="phone-forwarded"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-slate-900 text-base" id="emergency-modal-title">Emergency Hazard Dispatch</h3>
+          <span class="text-xs text-rose-600 font-mono font-bold" id="emergency-modal-phone">1-800-75-CONED</span>
+        </div>
+      </div>
+      <div class="p-5 space-y-3">
+        <div class="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-900 font-medium" id="emergency-modal-instruction"></div>
+        <p class="text-xs text-slate-600">Simulating direct cellular patch to City Emergency Dispatch. If you are in immediate personal danger, evacuate to a safe zone before using your phone.</p>
+      </div>
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+        <button type="button" class="btn btn-primary btn-sm" id="btn-close-emergency-modal">
+          Understood / End Simulation
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Global Toast Alerts Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+
+  <!-- ========================================================================
+       JAVASCRIPT SCRIPTS
+       Pure HTML, CSS, JavaScript Architecture
+       ======================================================================== -->
+  <script src="js/data.js"></script>
+  <script src="js/routing.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/issue-form.js"></script>
+  <script src="js/issue-detail.js"></script>
+  <script src="js/resident.js"></script>
+  <script src="js/municipal.js"></script>
+  <script src="js/helpdesk.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
