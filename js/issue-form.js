@@ -64,7 +64,25 @@ class IssueReportWizard {
       submitBtn.addEventListener('click', () => this.submitReport());
     }
 
-    // Ward dropdown change
+    // Ward / City inputs change
+    const reportCityInput = document.getElementById('report-city-input');
+    const reportAreaInput = document.getElementById('report-area-input');
+    const updateLocation = () => {
+      const city = reportCityInput ? reportCityInput.value.trim() : '';
+      const area = reportAreaInput ? reportAreaInput.value.trim() : '';
+      if (city && window.CivicDB) {
+        const ward = window.CivicDB.findOrCreateWard(city, area || 'General Locality');
+        this.formData.ward_id = ward.id;
+        this.formData.city = city;
+        this.formData.area = area;
+        this.formData.latitude = ward.lat;
+        this.formData.longitude = ward.lng;
+        this.checkDuplicates(ward.lat, ward.lng, this.formData.category);
+      }
+    };
+    if (reportCityInput) reportCityInput.addEventListener('change', updateLocation);
+    if (reportAreaInput) reportAreaInput.addEventListener('change', updateLocation);
+
     const wardSelect = document.getElementById('report-ward-select');
     if (wardSelect) {
       wardSelect.addEventListener('change', (e) => {
@@ -102,14 +120,18 @@ class IssueReportWizard {
       photos: []
     };
 
-    const wardSelect = document.getElementById('report-ward-select');
-    if (wardSelect) {
-      wardSelect.value = defaultWardId;
-    }
-
+    const cityInput = document.getElementById('report-city-input');
+    const areaInput = document.getElementById('report-area-input');
     const addrInput = document.getElementById('report-address-input');
+
+    if (cityInput) {
+      cityInput.value = (user && user.city) || (ward && ward.city) || 'New Delhi';
+    }
+    if (areaInput) {
+      areaInput.value = (user && user.area) || (ward && ward.name) || 'Connaught Place';
+    }
     if (addrInput) {
-      addrInput.value = '';
+      addrInput.value = (user && user.address) || '';
     }
 
     // Reset hazard toggle
@@ -203,24 +225,43 @@ class IssueReportWizard {
     }
 
     if (this.currentStep === 2) {
-      const wardSelect = document.getElementById('report-ward-select');
-      if (wardSelect && wardSelect.value) {
-        this.formData.ward_id = wardSelect.value;
-        const ward = window.CivicDB ? window.CivicDB.getWardById(wardSelect.value) : null;
-        if (ward) {
-          this.formData.latitude = ward.lat;
-          this.formData.longitude = ward.lng;
-        }
-      }
-
+      const cityInput = document.getElementById('report-city-input');
+      const areaInput = document.getElementById('report-area-input');
       const addrInput = document.getElementById('report-address-input');
-      const addr = addrInput ? addrInput.value.trim() : '';
-      if (!addr) {
-        window.App.showToast('Please enter a street address or landmark.', 'error');
+
+      const city = cityInput ? cityInput.value.trim() : '';
+      const area = areaInput ? areaInput.value.trim() : '';
+      const street = addrInput ? addrInput.value.trim() : '';
+
+      if (!city) {
+        window.App.showToast('Please enter or select a city in India.', 'error');
+        if (cityInput) cityInput.focus();
+        return;
+      }
+      if (!area) {
+        window.App.showToast('Please enter a locality, ward, or neighborhood.', 'error');
+        if (areaInput) areaInput.focus();
+        return;
+      }
+      if (!street) {
+        window.App.showToast('Please enter a street, road, or nearby landmark.', 'error');
         if (addrInput) addrInput.focus();
         return;
       }
-      this.formData.address = addr;
+
+      const fullAddress = `${street}, ${area}, ${city}`;
+      this.formData.address = fullAddress;
+      this.formData.city = city;
+      this.formData.area = area;
+
+      if (window.CivicDB) {
+        const ward = window.CivicDB.findOrCreateWard(city, area);
+        this.formData.ward_id = ward.id;
+        this.formData.ward_name = ward.name;
+        this.formData.latitude = ward.lat;
+        this.formData.longitude = ward.lng;
+        this.checkDuplicates(ward.lat, ward.lng, this.formData.category);
+      }
 
       this.currentStep = 3;
       this.updateStepUI();
@@ -475,7 +516,9 @@ class IssueReportWizard {
       latitude: this.formData.latitude,
       longitude: this.formData.longitude,
       address: this.formData.address,
+      city: this.formData.city || (user ? user.city : 'India'),
       ward_id: this.formData.ward_id || (user ? user.ward_id : 'ward-1'),
+      ward_name: this.formData.ward_name || (user ? user.area : 'General Area'),
       priority: routing.priority,
       assigned_department: routing.departmentId,
       photos: this.formData.photos

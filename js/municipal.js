@@ -10,6 +10,7 @@ class MunicipalDashboard {
     this.filters = {
       category: 'all',
       priority: 'all',
+      city: 'all',
       ward: 'all',
       assignee: 'all',
       search: ''
@@ -32,13 +33,13 @@ class MunicipalDashboard {
     // Filter selects
     const catSelect = document.getElementById('muni-filter-category');
     const prioSelect = document.getElementById('muni-filter-priority');
-    const wardSelect = document.getElementById('muni-filter-ward');
+    const citySelect = document.getElementById('muni-filter-city') || document.getElementById('muni-filter-ward');
     const assignSelect = document.getElementById('muni-filter-assignee');
     const searchInput = document.getElementById('muni-filter-search');
 
     if (catSelect) catSelect.addEventListener('change', (e) => { this.filters.category = e.target.value; this.render(); });
     if (prioSelect) prioSelect.addEventListener('change', (e) => { this.filters.priority = e.target.value; this.render(); });
-    if (wardSelect) wardSelect.addEventListener('change', (e) => { this.filters.ward = e.target.value; this.render(); });
+    if (citySelect) citySelect.addEventListener('change', (e) => { this.filters.city = e.target.value; this.render(); });
     if (assignSelect) assignSelect.addEventListener('change', (e) => { this.filters.assignee = e.target.value; this.render(); });
     if (searchInput) searchInput.addEventListener('input', (e) => { this.filters.search = e.target.value.toLowerCase().trim(); this.render(); });
 
@@ -133,9 +134,12 @@ class MunicipalDashboard {
       issues = issues.filter(i => i.priority.toLowerCase() === this.filters.priority.toLowerCase());
     }
 
-    // Ward
-    if (this.filters.ward !== 'all') {
-      issues = issues.filter(i => i.ward_id === this.filters.ward);
+    // City Filter (Pan-India)
+    if (this.filters.city && this.filters.city !== 'all') {
+      issues = issues.filter(i => {
+        const issueCity = i.city || (window.CivicDB && window.CivicDB.getWardById(i.ward_id)?.city) || '';
+        return issueCity.toLowerCase() === this.filters.city.toLowerCase() || (i.address && i.address.toLowerCase().includes(this.filters.city.toLowerCase()));
+      });
     }
 
     // Assignee (Admin filter)
@@ -184,6 +188,7 @@ class MunicipalDashboard {
       this.selectedIssueIds.clear();
     }
 
+    this.populateCityFilterOptions();
     this.renderKPIs();
     const filteredIssues = this.getFilteredIssues();
 
@@ -195,6 +200,37 @@ class MunicipalDashboard {
 
     this.updateBulkActionBar();
     if (window.lucide) window.lucide.createIcons();
+  }
+
+  populateCityFilterOptions() {
+    const citySelect = document.getElementById('muni-filter-city');
+    if (!citySelect) return;
+
+    const citiesSet = new Set();
+    const allIssues = window.CivicDB ? window.CivicDB.getIssues() : [];
+    const allWards = window.CivicDB ? window.CivicDB.getWards() : [];
+
+    allIssues.forEach(i => {
+      if (i.city) citiesSet.add(i.city.trim());
+      else if (i.ward_id) {
+        const w = window.CivicDB.getWardById(i.ward_id);
+        if (w && w.city) citiesSet.add(w.city.trim());
+      }
+    });
+    allWards.forEach(w => {
+      if (w.city) citiesSet.add(w.city.trim());
+    });
+
+    const currentVal = this.filters.city || citySelect.value || 'all';
+    const sortedCities = Array.from(citiesSet).sort();
+
+    // Only update innerHTML if options changed to avoid jumping focus
+    const newHtml = `<option value="all">All Indian Cities</option>` +
+      sortedCities.map(c => `<option value="${c}" ${c.toLowerCase() === currentVal.toLowerCase() ? 'selected' : ''}>${c}</option>`).join('');
+
+    if (citySelect.innerHTML !== newHtml) {
+      citySelect.innerHTML = newHtml;
+    }
   }
 
   renderKPIs() {

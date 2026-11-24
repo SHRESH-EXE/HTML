@@ -69,6 +69,8 @@ class AuthManager {
       name: userData.name,
       email: userData.email,
       phone: userData.phone,
+      city: userData.city || 'General',
+      area: userData.area || '',
       ward_id: userData.ward_id || 'ward-1',
       role: 'resident'
     });

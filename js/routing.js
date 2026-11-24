@@ -1,5 +1,5 @@
 /**
- * NagrikSeva - Routing Rules Engine & SLA Monitor
+ * CivicPulse - Routing Rules Engine & SLA Monitor
  * Auto-routes citizen grievances to Indian Municipal Bodies (PWD, BESCOM, SWM, BWSSB, Horticulture)
  */
 

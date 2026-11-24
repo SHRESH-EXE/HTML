@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NagrikSeva (नागरिक सेवा) - Citizen Grievance & Municipal Redressal Portal</title>
-  <meta name="description" content="Report road potholes, streetlights, garbage blackspots, and water leakage in seconds and track them to verified resolution with NagrikSeva.">
+  <title>CivicPulse - Citizen Grievance & Municipal Redressal Portal</title>
+  <meta name="description" content="Report road potholes, streetlights, garbage blackspots, and water leakage in seconds and track them to verified resolution with CivicPulse.">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,8 +28,8 @@
       <!-- Brand Logo -->
       <div class="nav-brand" onclick="window.App.goHome()">
         <div class="brand-title-wrap">
-          <span class="brand-title">NagrikSeva</span>
-          <span class="brand-subtitle">नागरिक सेवा पोर्टल • Municipal Corp</span>
+          <span class="brand-title">CivicPulse</span>
+          <span class="brand-subtitle">Citizen Service Portal • Municipal Corp</span>
         </div>
       </div>
 
@@ -102,10 +102,10 @@
     <div class="auth-left-panel">
       <div>
         <div class="auth-civic-badge">
-          <i data-lucide="landmark"></i> नगर निगम नागरिक सेवा पोर्टल • Smart City Mission
+          <i data-lucide="landmark"></i> Municipal Corporation Citizen Portal • Smart City Mission
         </div>
         <h1 class="auth-hero-title">
-          एक शहर, एक आवाज़ —<br><span>One neighborhood, one voice.</span>
+          One City, One Voice —<br><span>Report & track civic issues in your neighborhood.</span>
         </h1>
         <p class="auth-hero-desc">
           "One neighborhood, one voice. Report potholes, streetlight outages, and waste issues in seconds and track them to resolution."
@@ -149,7 +149,7 @@
           <input type="password" id="login-password" class="form-input" value="password123" required>
         </div>
         <button type="submit" class="btn btn-primary btn-md mt-2">
-          Sign In to NagrikSeva <i data-lucide="arrow-right"></i>
+          Sign In to CivicPulse <i data-lucide="arrow-right"></i>
         </button>
 
         <!-- Quick Demo Role Logins -->
@@ -194,24 +194,15 @@
           <label for="reg-phone">Phone Number</label>
           <input type="tel" id="reg-phone" class="form-input" placeholder="+91 98765 43210" required>
         </div>
-        <div class="form-group">
-          <label for="reg-ward">Neighborhood / Ward</label>
-          <select id="reg-ward" class="form-select" required>
-            <option value="ward-5">New Delhi - Ward 24 (Connaught Place)</option>
-            <option value="ward-6">New Delhi - Ward 42 (South Extension)</option>
-            <option value="ward-7">Mumbai - Ward H/West (Bandra West)</option>
-            <option value="ward-8">Mumbai - Ward A (Marine Drive)</option>
-            <option value="ward-1">Bengaluru - Ward 112 (Indiranagar Central)</option>
-            <option value="ward-2">Bengaluru - Ward 80 (Koramangala)</option>
-            <option value="ward-3">Bengaluru - Ward 150 (Bellandur)</option>
-            <option value="ward-4">Bengaluru - Ward 74 (Malleshwaram)</option>
-            <option value="ward-9">Kolkata - Ward 63 (Park Street)</option>
-            <option value="ward-10">Kolkata - Ward 31 (Salt Lake Sector V)</option>
-            <option value="ward-11">Hyderabad - Ward 98 (HITEC City)</option>
-            <option value="ward-12">Hyderabad - Ward 70 (Banjara Hills)</option>
-            <option value="ward-13">Chennai - Ward 118 (T. Nagar)</option>
-            <option value="ward-14">Pune - Ward 12 (Shivajinagar)</option>
-          </select>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="form-group">
+            <label for="reg-city">City / District (Any in India)</label>
+            <input type="text" id="reg-city" list="indian-cities-list" class="form-input" placeholder="e.g. Lucknow, Jaipur, Kochi, Patna..." required>
+          </div>
+          <div class="form-group">
+            <label for="reg-ward">Area / Ward / Neighborhood</label>
+            <input type="text" id="reg-ward" class="form-input" placeholder="e.g. Gomti Nagar, C-Scheme, Sector 18..." required>
+          </div>
         </div>
         <div class="form-group">
           <label for="reg-password">Password</label>
@@ -348,22 +339,8 @@
     <!-- Filter Toolbar -->
     <div class="muni-filter-toolbar">
       <div class="muni-filter-inputs">
-        <select id="muni-filter-ward" class="filter-select">
-          <option value="all">All Wards (India)</option>
-          <option value="ward-5">Delhi - Connaught Place</option>
-          <option value="ward-6">Delhi - South Extension</option>
-          <option value="ward-7">Mumbai - Bandra West</option>
-          <option value="ward-8">Mumbai - Marine Drive</option>
-          <option value="ward-1">Bengaluru - Indiranagar</option>
-          <option value="ward-2">Bengaluru - Koramangala</option>
-          <option value="ward-3">Bengaluru - Bellandur</option>
-          <option value="ward-4">Bengaluru - Malleshwaram</option>
-          <option value="ward-9">Kolkata - Park Street</option>
-          <option value="ward-10">Kolkata - Salt Lake</option>
-          <option value="ward-11">Hyderabad - HITEC City</option>
-          <option value="ward-12">Hyderabad - Banjara Hills</option>
-          <option value="ward-13">Chennai - T. Nagar</option>
-          <option value="ward-14">Pune - Shivajinagar</option>
+        <select id="muni-filter-city" class="filter-select">
+          <option value="all">All Cities (Pan-India)</option>
         </select>
 
         <select id="muni-filter-assignee" class="filter-select">
@@ -675,37 +652,28 @@
 
         </div>
 
-        <!-- STEP 2: Location & Duplicate Check -->
+        <!-- STEP 2: Location & Duplicate Check (Any City & Area in India) -->
         <div class="wizard-step-view" id="wizard-step-2">
           
           <div class="mb-3">
-            <label class="text-sm font-bold text-slate-900">Issue Location & Landmark</label>
-            <p class="text-xs text-slate-500">Select the neighborhood ward and provide the street address or nearest landmark.</p>
+            <label class="text-sm font-bold text-slate-900">Issue Location (Any City & Area in India)</label>
+            <p class="text-xs text-slate-500">Add issues from any city, town, or district in India. Enter your city and specific locality below.</p>
           </div>
 
-          <div class="form-group mb-3">
-            <label for="report-ward-select" class="text-xs font-semibold text-slate-700">Neighborhood / Ward</label>
-            <select id="report-ward-select" class="form-select text-xs mt-1">
-              <option value="ward-1">Bengaluru - Ward 112 (Indiranagar Central)</option>
-              <option value="ward-2">Bengaluru - Ward 80 (Koramangala & HSR Link)</option>
-              <option value="ward-3">Bengaluru - Ward 150 (Bellandur & ORR)</option>
-              <option value="ward-4">Bengaluru - Ward 74 (Malleshwaram)</option>
-              <option value="ward-5">New Delhi - Ward 24 (Connaught Place)</option>
-              <option value="ward-6">New Delhi - Ward 42 (South Extension)</option>
-              <option value="ward-7">Mumbai - Ward H/West (Bandra West)</option>
-              <option value="ward-8">Mumbai - Ward A (Marine Drive)</option>
-              <option value="ward-9">Kolkata - Ward 63 (Park Street)</option>
-              <option value="ward-10">Kolkata - Ward 31 (Salt Lake Sector V)</option>
-              <option value="ward-11">Hyderabad - Ward 98 (HITEC City)</option>
-              <option value="ward-12">Hyderabad - Ward 70 (Banjara Hills)</option>
-              <option value="ward-13">Chennai - Ward 118 (T. Nagar)</option>
-              <option value="ward-14">Pune - Ward 12 (Shivajinagar)</option>
-            </select>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+            <div class="form-group">
+              <label for="report-city-input" class="text-xs font-semibold text-slate-700">City / District (Any in India)</label>
+              <input type="text" id="report-city-input" list="indian-cities-list" class="form-input text-xs mt-1" placeholder="e.g. Lucknow, Jaipur, Patna, Bhopal, Kochi..." required>
+            </div>
+            <div class="form-group">
+              <label for="report-area-input" class="text-xs font-semibold text-slate-700">Area / Ward / Neighborhood</label>
+              <input type="text" id="report-area-input" class="form-input text-xs mt-1" placeholder="e.g. Gomti Nagar, C-Scheme, Boring Road, Ward 12..." required>
+            </div>
           </div>
 
           <div class="form-group mb-3">
             <label for="report-address-input" class="text-xs font-semibold text-slate-700">Street Address / Nearest Landmark</label>
-            <input type="text" id="report-address-input" class="form-input text-xs mt-1" placeholder="e.g. Near Metro Pillar 42, 100 Feet Road, Indiranagar" required>
+            <input type="text" id="report-address-input" class="form-input text-xs mt-1" placeholder="e.g. Near Metro Pillar 42, Opposite City Hospital, Main Market Road" required>
           </div>
 
           <!-- Inline Duplicate Match Card: "Wait! Has this already been reported?" -->
@@ -1021,6 +989,92 @@
     </div>
   </div>
 
+
+  <!-- Datalist of Major Indian Cities for Autocomplete (Any city/town in India can be entered) -->
+  <datalist id="indian-cities-list">
+    <option value="New Delhi">Delhi / NCR</option>
+    <option value="Bengaluru">Karnataka</option>
+    <option value="Mumbai">Maharashtra</option>
+    <option value="Kolkata">West Bengal</option>
+    <option value="Hyderabad">Telangana</option>
+    <option value="Chennai">Tamil Nadu</option>
+    <option value="Ahmedabad">Gujarat</option>
+    <option value="Pune">Maharashtra</option>
+    <option value="Jaipur">Rajasthan</option>
+    <option value="Lucknow">Uttar Pradesh</option>
+    <option value="Kanpur">Uttar Pradesh</option>
+    <option value="Nagpur">Maharashtra</option>
+    <option value="Indore">Madhya Pradesh</option>
+    <option value="Bhopal">Madhya Pradesh</option>
+    <option value="Patna">Bihar</option>
+    <option value="Vadodara">Gujarat</option>
+    <option value="Surat">Gujarat</option>
+    <option value="Ghaziabad">Uttar Pradesh</option>
+    <option value="Ludhiana">Punjab</option>
+    <option value="Agra">Uttar Pradesh</option>
+    <option value="Nashik">Maharashtra</option>
+    <option value="Varanasi">Uttar Pradesh</option>
+    <option value="Srinagar">Jammu & Kashmir</option>
+    <option value="Amritsar">Punjab</option>
+    <option value="Prayagraj (Allahabad)">Uttar Pradesh</option>
+    <option value="Ranchi">Jharkhand</option>
+    <option value="Coimbatore">Tamil Nadu</option>
+    <option value="Jabalpur">Madhya Pradesh</option>
+    <option value="Gwalior">Madhya Pradesh</option>
+    <option value="Vijayawada">Andhra Pradesh</option>
+    <option value="Jodhpur">Rajasthan</option>
+    <option value="Raipur">Chhattisgarh</option>
+    <option value="Kota">Rajasthan</option>
+    <option value="Guwahati">Assam</option>
+    <option value="Chandigarh">Punjab / Haryana</option>
+    <option value="Mysore (Mysuru)">Karnataka</option>
+    <option value="Gurgaon (Gurugram)">Haryana</option>
+    <option value="Noida">Uttar Pradesh</option>
+    <option value="Bhubaneswar">Odisha</option>
+    <option value="Kochi">Kerala</option>
+    <option value="Thiruvananthapuram">Kerala</option>
+    <option value="Visakhapatnam">Andhra Pradesh</option>
+    <option value="Dehradun">Uttarakhand</option>
+    <option value="Shimla">Himachal Pradesh</option>
+    <option value="Jammu">Jammu & Kashmir</option>
+    <option value="Aligarh">Uttar Pradesh</option>
+    <option value="Bareilly">Uttar Pradesh</option>
+    <option value="Moradabad">Uttar Pradesh</option>
+    <option value="Gorakhpur">Uttar Pradesh</option>
+    <option value="Meerut">Uttar Pradesh</option>
+    <option value="Ayodhya">Uttar Pradesh</option>
+    <option value="Udaipur">Rajasthan</option>
+    <option value="Ajmer">Rajasthan</option>
+    <option value="Bikaner">Rajasthan</option>
+    <option value="Gaya">Bihar</option>
+    <option value="Muzaffarpur">Bihar</option>
+    <option value="Jamshedpur">Jharkhand</option>
+    <option value="Dhanbad">Jharkhand</option>
+    <option value="Cuttack">Odisha</option>
+    <option value="Rourkela">Odisha</option>
+    <option value="Madurai">Tamil Nadu</option>
+    <option value="Salem">Tamil Nadu</option>
+    <option value="Tiruchirappalli">Tamil Nadu</option>
+    <option value="Kozhikode">Kerala</option>
+    <option value="Kollam">Kerala</option>
+    <option value="Warangal">Telangana</option>
+    <option value="Guntur">Andhra Pradesh</option>
+    <option value="Tirupati">Andhra Pradesh</option>
+    <option value="Hubballi-Dharwad">Karnataka</option>
+    <option value="Mangaluru">Karnataka</option>
+    <option value="Belagavi">Karnataka</option>
+    <option value="Solapur">Maharashtra</option>
+    <option value="Kolhapur">Maharashtra</option>
+    <option value="Aurangabad">Maharashtra</option>
+    <option value="Rajkot">Gujarat</option>
+    <option value="Bhavnagar">Gujarat</option>
+    <option value="Jamnagar">Gujarat</option>
+    <option value="Panaji">Goa</option>
+    <option value="Shillong">Meghalaya</option>
+    <option value="Imphal">Manipur</option>
+    <option value="Aizawl">Mizoram</option>
+    <option value="Agartala">Tripura</option>
+  </datalist>
 
   <!-- Global Toast Alerts Container -->
   <div class="toast-container" id="toast-container"></div>

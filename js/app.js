@@ -127,12 +127,23 @@ class Application {
         const name = document.getElementById('reg-fullname').value;
         const email = document.getElementById('reg-email').value;
         const phone = document.getElementById('reg-phone').value;
-        const ward_id = document.getElementById('reg-ward').value;
+        const city = (document.getElementById('reg-city')?.value || '').trim() || 'General';
+        const wardName = (document.getElementById('reg-ward')?.value || '').trim() || 'Main Area';
         const password = document.getElementById('reg-password').value;
 
-        const result = window.Auth.register({ name, email, phone, ward_id, password });
+        const ward = window.CivicDB ? window.CivicDB.findOrCreateWard(city, wardName) : { id: 'ward-1' };
+
+        const result = window.Auth.register({
+          name,
+          email,
+          phone,
+          city,
+          area: wardName,
+          ward_id: ward.id,
+          password
+        });
         if (result.success) {
-          this.showToast(`Account created for ${result.user.name}!`, 'success');
+          this.showToast(`Account created for ${result.user.name} (${city})!`, 'success');
           this.switchView('resident');
         } else {
           this.showToast(result.error, 'error');

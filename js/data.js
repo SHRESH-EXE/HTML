@@ -1,10 +1,66 @@
 /**
- * NagrikSeva (नागरिक सेवा) - Neighborhood Residents Reporting Platform
+ * CivicPulse - Neighborhood Residents Reporting Platform
  * Local Database Store & Seed Data (Indian Urban Civic Context)
  * Schema models: Users, Issues, IssueMedia, Comments, Notifications, HelpDeskTickets, Departments, Wards
  */
 
-const STORAGE_KEY = "nagrikseva_db_v3";
+const STORAGE_KEY = "nagrikseva_db_v4";
+
+// Major Indian Cities Coordinates Lookup (Pan-India Freedom)
+const INDIAN_CITY_COORDS = {
+  "delhi": { lat: 28.6139, lng: 77.2090 },
+  "new delhi": { lat: 28.6139, lng: 77.2090 },
+  "bengaluru": { lat: 12.9716, lng: 77.5946 },
+  "bangalore": { lat: 12.9716, lng: 77.5946 },
+  "mumbai": { lat: 19.0760, lng: 72.8777 },
+  "kolkata": { lat: 22.5726, lng: 88.3639 },
+  "hyderabad": { lat: 17.3850, lng: 78.4867 },
+  "chennai": { lat: 13.0827, lng: 80.2707 },
+  "pune": { lat: 18.5204, lng: 73.8567 },
+  "ahmedabad": { lat: 23.0225, lng: 72.5714 },
+  "jaipur": { lat: 26.9124, lng: 75.7873 },
+  "lucknow": { lat: 26.8467, lng: 80.9462 },
+  "kanpur": { lat: 26.4499, lng: 80.3319 },
+  "nagpur": { lat: 21.1458, lng: 79.0882 },
+  "indore": { lat: 22.7196, lng: 75.8577 },
+  "bhopal": { lat: 23.2599, lng: 77.4126 },
+  "patna": { lat: 25.5941, lng: 85.1376 },
+  "vadodara": { lat: 22.3072, lng: 73.1812 },
+  "ghaziabad": { lat: 28.6692, lng: 77.4538 },
+  "ludhiana": { lat: 30.9010, lng: 75.8573 },
+  "agra": { lat: 27.1767, lng: 78.0081 },
+  "nashik": { lat: 19.9975, lng: 73.7898 },
+  "varanasi": { lat: 25.3176, lng: 82.9739 },
+  "srinagar": { lat: 34.0837, lng: 74.7973 },
+  "amritsar": { lat: 31.6340, lng: 74.8723 },
+  "chandigarh": { lat: 30.7333, lng: 76.7794 },
+  "kochi": { lat: 9.9312, lng: 76.2673 },
+  "coimbatore": { lat: 11.0168, lng: 76.9558 },
+  "surat": { lat: 21.1702, lng: 72.8311 },
+  "visakhapatnam": { lat: 17.6868, lng: 83.2185 },
+  "dehradun": { lat: 30.3165, lng: 78.0322 },
+  "ranchi": { lat: 23.3441, lng: 85.3096 },
+  "guwahati": { lat: 26.1445, lng: 91.7362 },
+  "bhubaneswar": { lat: 20.2961, lng: 85.8245 },
+  "raipur": { lat: 21.2514, lng: 81.6296 },
+  "shimla": { lat: 31.1048, lng: 77.1734 },
+  "mysuru": { lat: 12.2958, lng: 76.6394 },
+  "thiruvananthapuram": { lat: 8.5241, lng: 76.9366 },
+  "noida": { lat: 28.5355, lng: 77.3910 },
+  "gurugram": { lat: 28.4595, lng: 77.0266 },
+  "faridabad": { lat: 28.4089, lng: 77.3178 }
+};
+
+function getCoordsForCity(cityName) {
+  if (!cityName) return { lat: 20.5937, lng: 78.9629 };
+  const key = cityName.toLowerCase().trim();
+  for (const [k, coords] of Object.entries(INDIAN_CITY_COORDS)) {
+    if (key.includes(k) || k.includes(key)) {
+      return coords;
+    }
+  }
+  return { lat: 20.5937, lng: 78.9629 };
+}
 
 // Seed Initial Data (Indian Municipal Governance)
 const SEED_DATA = {
@@ -128,6 +184,24 @@ const SEED_DATA = {
       lat: 18.5314,
       lng: 73.8446,
     },
+    // Lucknow
+    {
+      id: "ward-lucknow-hazratganj",
+      name: "Hazratganj Central",
+      zone: "Central Zone",
+      city: "Lucknow",
+      lat: 26.8488,
+      lng: 80.9452,
+    },
+    // Jaipur
+    {
+      id: "ward-jaipur-malviya",
+      name: "Malviya Nagar",
+      zone: "South Zone",
+      city: "Jaipur",
+      lat: 26.8532,
+      lng: 75.8156,
+    },
   ],
 
   departments: [
@@ -229,7 +303,7 @@ const SEED_DATA = {
       department_id: "dept-admin",
       avatar:
         "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80",
-      title: "Nagrik Sahayata Officer",
+      title: "Citizen Assistance Officer",
     },
     {
       id: "usr-admin-1",
@@ -674,7 +748,9 @@ const SEED_DATA = {
       latitude: 18.5285,
       longitude: 73.842,
       address: "Fergusson College Road, Near Goodluck Cafe, Shivajinagar, Pune",
+      city: "Pune",
       ward_id: "ward-14",
+      ward_name: "Ward 12 - Shivajinagar & FC Road",
       priority: "medium",
       status: "assigned",
       assigned_department: "dept-elec",
@@ -693,6 +769,71 @@ const SEED_DATA = {
           status: "assigned",
           timestamp: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
           note: "PMC electrical division assigned",
+        },
+      ],
+    },
+    // Lucknow Issue
+    {
+      id: "ISS-2026-101",
+      reporter_id: "usr-res-1",
+      category: "Roads",
+      title: "Broken divider and pothole cluster near Hazratganj crossing",
+      description:
+        "Multiple deep potholes appearing around Hazratganj multi-level parking circle causing traffic crawl during peak evening hours.",
+      latitude: 26.8488,
+      longitude: 80.9452,
+      address: "MG Marg, Near Hazratganj GPO, Lucknow, Uttar Pradesh",
+      city: "Lucknow",
+      ward_id: "ward-lucknow-hazratganj",
+      ward_name: "Hazratganj Central",
+      priority: "high",
+      status: "assigned",
+      assigned_department: "dept-pw",
+      assigned_to_id: "usr-field-1",
+      upvotes_count: 22,
+      parent_issue_id: null,
+      created_at: new Date(Date.now() - 5 * 3600 * 1000).toISOString(),
+      updated_at: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
+      timeline: [
+        {
+          status: "submitted",
+          timestamp: new Date(Date.now() - 5 * 3600 * 1000).toISOString(),
+          note: "Reported by Resident",
+        },
+        {
+          status: "assigned",
+          timestamp: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
+          note: "Lucknow Municipal Corporation PWD dispatched",
+        },
+      ],
+    },
+    // Jaipur Issue
+    {
+      id: "ISS-2026-102",
+      reporter_id: "usr-res-1",
+      category: "Water",
+      title: "Overflowing drainage line submerging market street in Malviya Nagar",
+      description:
+        "Choked storm water drain overflowing on sector road outside local market. Strong stench and pedestrian blockage.",
+      latitude: 26.8532,
+      longitude: 75.8156,
+      address: "Sector 3 Road, Near Gaurav Tower, Malviya Nagar, Jaipur, Rajasthan",
+      city: "Jaipur",
+      ward_id: "ward-jaipur-malviya",
+      ward_name: "Malviya Nagar",
+      priority: "high",
+      status: "submitted",
+      assigned_department: "dept-water",
+      assigned_to_id: null,
+      upvotes_count: 17,
+      parent_issue_id: null,
+      created_at: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
+      updated_at: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
+      timeline: [
+        {
+          status: "submitted",
+          timestamp: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
+          note: "Reported by Resident",
         },
       ],
     },
@@ -911,14 +1052,14 @@ const SEED_DATA = {
       question: 'Why is an "After" photo compulsory to resolve a ticket?',
       category: "Accountability & Audit",
       answer:
-        'Under the Nagrik Grievance Redressal Rules, municipal field personnel cannot mark an issue "Resolved" without uploading geo-tagged photo evidence taken on-site. The resident who filed the grievance receives this proof directly in their notification feed.',
+        'Under the Citizen Grievance Redressal Rules, municipal field personnel cannot mark an issue "Resolved" without uploading geo-tagged photo evidence taken on-site. The resident who filed the grievance receives this proof directly in their notification feed.',
     },
     {
       question:
         "How do I escalate an overdue civic issue to the Zonal Commissioner?",
       category: "Help Desk",
       answer:
-        'If an issue exceeds the stipulated Citizen Charter SLA (e.g. 24h for electricity or 48h for roads), residents can click "Escalate Unresolved Issue" in the Help Desk tab. Our Nagrik Sahayata officers have direct paging authority to dispatch supervisory staff.',
+        'If an issue exceeds the stipulated Citizen Charter SLA (e.g. 24h for electricity or 48h for roads), residents can click "Escalate Unresolved Issue" in the Help Desk tab. Our Citizen Assistance officers have direct paging authority to dispatch supervisory staff.',
     },
   ],
 
@@ -965,6 +1106,7 @@ class CivicDatabase {
       // Clear legacy storage versions to refresh seeds with Pan-India data
       localStorage.removeItem("nagrikseva_db_v1");
       localStorage.removeItem("nagrikseva_db_v2");
+      localStorage.removeItem("nagrikseva_db_v3");
       this.data = JSON.parse(JSON.stringify(SEED_DATA));
       this.save();
     } else {
@@ -1030,6 +1172,8 @@ class CivicDatabase {
       password_hash: "argon2id$mock_" + Math.random().toString(36).slice(2),
       role: userData.role || "resident",
       ward_id: userData.ward_id || "ward-1",
+      city: userData.city || "General",
+      area: userData.area || "",
       department_id: userData.department_id || null,
       avatar: `https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&q=80`,
       address: userData.address || "",
@@ -1049,16 +1193,24 @@ class CivicDatabase {
 
   createIssue(issueData) {
     const newId = "ISS-2026-" + (Math.floor(Math.random() * 900) + 100);
+    const ward = this.getWardById(issueData.ward_id);
+    const city = issueData.city || (ward ? ward.city : "India");
+    const wardName = issueData.ward_name || (ward ? ward.name : "General Area");
+    const lat = parseFloat(issueData.latitude) || (ward ? ward.lat : 20.5937);
+    const lng = parseFloat(issueData.longitude) || (ward ? ward.lng : 78.9629);
+
     const newIssue = {
       id: newId,
       reporter_id: issueData.reporter_id,
       category: issueData.category,
       title: issueData.title,
       description: issueData.description,
-      latitude: parseFloat(issueData.latitude),
-      longitude: parseFloat(issueData.longitude),
+      latitude: lat,
+      longitude: lng,
       address: issueData.address,
-      ward_id: issueData.ward_id || "ward-1",
+      city: city,
+      ward_id: issueData.ward_id || (ward ? ward.id : "ward-1"),
+      ward_name: wardName,
       priority: issueData.priority || "medium",
       status: "submitted",
       assigned_department: issueData.assigned_department,
@@ -1412,8 +1564,73 @@ class CivicDatabase {
   getWards() {
     return this.data.wards;
   }
+
   getWardById(id) {
-    return this.data.wards.find((w) => w.id === id);
+    if (!id) {
+      return {
+        id: "ward-general",
+        name: "General Area",
+        zone: "General Zone",
+        city: "India",
+        lat: 20.5937,
+        lng: 78.9629,
+      };
+    }
+    const found = this.data.wards.find((w) => w.id === id);
+    if (found) return found;
+
+    // Gracefully handle dynamic ward IDs like ward-lucknow-hazratganj
+    const cleanId = id.replace(/^ward-/, "");
+    const parts = cleanId.split("-");
+    const inferredCity = parts[0] ? parts[0].charAt(0).toUpperCase() + parts[0].slice(1) : "India";
+    const rawArea = parts.slice(1).join(" ") || "General Locality";
+    const inferredArea = rawArea.charAt(0).toUpperCase() + rawArea.slice(1);
+    const coords = getCoordsForCity(inferredCity);
+
+    return {
+      id: id,
+      name: inferredArea,
+      zone: `${inferredCity} Municipal Zone`,
+      city: inferredCity,
+      lat: coords.lat,
+      lng: coords.lng,
+    };
+  }
+
+  findOrCreateWard(cityName, areaName) {
+    const cityClean = (cityName || "India").trim();
+    const areaClean = (areaName || "Main Area").trim();
+    const safeCitySlug = cityClean.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
+    const safeAreaSlug = areaClean.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").slice(0, 24);
+    const wardId = `ward-${safeCitySlug}-${safeAreaSlug}`;
+
+    let existing = this.data.wards.find(
+      (w) =>
+        w.id === wardId ||
+        (w.city &&
+          w.name &&
+          w.city.toLowerCase() === cityClean.toLowerCase() &&
+          w.name.toLowerCase() === areaClean.toLowerCase())
+    );
+
+    if (existing) return existing;
+
+    const coords = getCoordsForCity(cityClean);
+    const jitterLat = (Math.random() - 0.5) * 0.03;
+    const jitterLng = (Math.random() - 0.5) * 0.03;
+
+    const newWard = {
+      id: wardId,
+      name: areaClean,
+      zone: `${cityClean} Municipal Zone`,
+      city: cityClean,
+      lat: parseFloat((coords.lat + jitterLat).toFixed(4)),
+      lng: parseFloat((coords.lng + jitterLng).toFixed(4)),
+    };
+
+    this.data.wards.push(newWard);
+    this.save();
+    return newWard;
   }
   getDepartments() {
     return this.data.departments;

@@ -387,7 +387,7 @@ class HelpDeskModule {
           return `
             <div class="ticket-chat-bubble ${isStaff ? 'agent-reply' : 'resident-msg'}">
               <div class="chat-sender-info">
-                <strong>${isStaff ? 'Priya Patel (Nagrik Sahayata Officer)' : (resident ? resident.name : 'Aarav Sharma')}</strong>
+                <strong>${isStaff ? 'Priya Patel (Citizen Support Officer)' : (resident ? resident.name : 'Aarav Sharma')}</strong>
                 <span>${new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' })}</span>
               </div>
               <p class="chat-text">${m.text}</p>
